@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Writer - Sharp</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Serif:opsz,wght@8..144,300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            /* Light (Standard) */
+            --app-bg: #eef1f5;         /* Slightly gray-blue background to make page pop */
+            --paper-bg: #ffffff;
+            --text-main: #111111;      /* Sharp Black */
+            --border-color: #cccccc;   /* Thin Grey Border */
+            --accent-ui: #444444;
+            --caret: #000000;
+        }
+
+        body.dark-mode {
+            --app-bg: #111111;
+            --paper-bg: #1c1c1c;
+            --text-main: #e6e6e6;
+            --border-color: #333333;
+            --accent-ui: #888888;
+            --caret: #ffffff;
+        }
+
+        body.green-mode {
+            --app-bg: #142118;
+            --paper-bg: #1e2e23;
+            --text-main: #b8cfc0;
+            --border-color: #2c4234;
+            --accent-ui: #62856e;
+            --caret: #b8cfc0;
+        }
+
+        body.red-mode {
+            --app-bg: #211414;
+            --paper-bg: #2e1e1e;
+            --text-main: #cfb8b8;
+            --border-color: #422c2c;
+            --accent-ui: #856262;
+            --caret: #cfb8b8;
+        }
+
+        body.yellow-mode {
+            --app-bg: #e8e3d8;
+            --paper-bg: #f7f3e8;
+            --text-main: #4a4238;
+            --border-color: #d1c8b4;
+            --accent-ui: #8f8576;
+            --caret: #4a4238;
+        }
+
+        /* --- LAYOUT --- */
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 50px 0 100px 0;
+            background-color: var(--app-bg);
+            font-family: 'Roboto Serif', serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.2s ease;
+        }
+
+        /* --- THE A5 PAGE --- */
+        .page-container {
+            width: 148mm;
+            min-height: 210mm;
+            background-color: var(--paper-bg);
+            border: 1px solid var(--border-color); /* The requested thin border */
+            padding: 20mm 15mm;
+            color: var(--text-main);
+            
+            /* Typography Settings */
+            font-size: 18px;           /* Comfortable writing size */
+            line-height: 1.6;          /* Standard book spacing */
+            font-weight: 400;          /* Regular weight (Sharp) */
+            
+            outline: none;
+            white-space: pre-wrap;
+            caret-color: var(--caret);
+            transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+            position: relative;
+        }
+
+        /* Placeholder */
+        .page-container:empty:before {
+            content: "Chapter 1...";
+            color: var(--accent-ui);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* --- UI CONTROLS (Fixed Top Right) --- */
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: 'Roboto Serif', serif;
+            font-size: 13px;
+            color: var(--accent-ui);
+            padding: 5px 10px;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--app-bg);
+            color: var(--text-main);
+        }
+
+        .action-btn {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Color Circles */
+        .color-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            padding: 0;
+        }
+        .dot-light { background: #ffffff; }
+        .dot-dark  { background: #1c1c1c; }
+        .dot-sepia { background: #f7f3e8; }
+        .dot-green { background: #1e2e23; }
+        .dot-red   { background: #2e1e1e; }
+
+        /* --- STICKY WORD COUNTER --- */
+        .word-counter {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--paper-bg);
+            border: 1px solid var(--border-color);
+            color: var(--accent-ui);
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 4px;
+            font-variant-numeric: tabular-nums;
+            z-index: 100;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--app-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border: 3px solid var(--app-bg); border-radius: 10px; }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+            .page-container { width: 94%; padding: 15mm 10mm; }
+            .controls { top: 10px; right: 10px; flex-direction: row; align-items: flex-start; }
+            .btn-group { flex-wrap: wrap; justify-content: flex-end; }
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+    <div class="controls">
+        <div class="btn-group">
+            <button class="action-btn" onclick="copyText()" id="copyBtn">Copy All</button>
+        </div>
+
+        <div class="btn-group">
+            <button class="color-dot dot-light" onclick="setTheme('light-mode')" title="Light"></button>
+            <button class="color-dot dot-sepia" onclick="setTheme('yellow-mode')" title="Sepia"></button>
+            <button class="color-dot dot-dark" onclick="setTheme('dark-mode')" title="Dark"></button>
+            <button class="color-dot dot-green" onclick="setTheme('green-mode')" title="Green"></button>
+            <button class="color-dot dot-red" onclick="setTheme('red-mode')" title="Red"></button>
+        </div>
+    </div>
+
+    <div class="page-container" id="editor" contenteditable="true" spellcheck="false"></div>
+
+    <div class="word-counter">
+        <span id="count">0</span> words
+    </div>
+
+    <script>
+        const editor = document.getElementById('editor');
+        const countSpan = document.getElementById('count');
+
+        // 1. Live Word Counter
+        editor.addEventListener('input', function() {
+            const text = editor.innerText.trim();
+            const count = text.length === 0 ? 0 : text.split(/\s+/).length;
+            countSpan.innerText = count;
+        });
+
+        // 2. Theme Switching
+        function setTheme(themeName) {
+            document.body.className = themeName;
+            localStorage.setItem('zw_theme', themeName);
+            editor.focus();
+        }
+
+        // 3. Copy Functionality
+        function copyText() {
+            const range = document.createRange();
+            range.selectNodeContents(editor);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            
+            document.execCommand('copy');
+            sel.removeAllRanges();
+
+            const btn = document.getElementById('copyBtn');
+            const originalText = btn.innerText;
+            btn.innerText = "COPIED!";
+            setTimeout(() => { btn.innerText = originalText; }, 1500);
+        }
+
+        // 4. Initialize
+        window.onload = function() {
+            const savedTheme = localStorage.getItem('zw_theme');
+            if(savedTheme) document.body.className = savedTheme;
+            editor.focus();
+        }
+    </script>
+</body>
+</html>
