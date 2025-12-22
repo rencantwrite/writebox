@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>writebox</title>
+    <title>Writebox</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Serif:opsz,wght@8..144,300;8..144,400;8..144,600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Serif:opsz,wght@8..144,300..600&display=swap" rel="stylesheet">
+
     <style>
         /* --- THEME VARIABLES --- */
         :root {
             /* Light (Standard) */
-            --app-bg: #eef1f5;         /* Slightly gray-blue background to make page pop */
+            --app-bg: #eef1f5;         
             --paper-bg: #ffffff;
-            --text-main: #111111;      /* Sharp Black */
-            --border-color: #cccccc;   /* Thin Grey Border */
+            --text-main: #111111;      
+            --border-color: #cccccc;   
             --accent-ui: #444444;
             --caret: #000000;
         }
@@ -77,14 +77,14 @@
             width: 148mm;
             min-height: 210mm;
             background-color: var(--paper-bg);
-            border: 1px solid var(--border-color); /* The requested thin border */
+            border: 1px solid var(--border-color); 
             padding: 20mm 15mm;
             color: var(--text-main);
             
             /* Typography Settings */
-            font-size: 18px;           /* Comfortable writing size */
-            line-height: 1.6;          /* Standard book spacing */
-            font-weight: 400;          /* Regular weight (Sharp) */
+            font-size: 18px;           
+            line-height: 1.6;          
+            font-weight: 400;          
             
             outline: none;
             white-space: pre-wrap;
@@ -95,7 +95,7 @@
 
         /* Placeholder */
         .page-container:empty:before {
-            content: "Chapter 1...";
+            content: "Start writing...";
             color: var(--accent-ui);
             opacity: 0.4;
             pointer-events: none;
@@ -215,17 +215,24 @@
         const editor = document.getElementById('editor');
         const countSpan = document.getElementById('count');
 
-        // 1. Live Word Counter
-        editor.addEventListener('input', function() {
+        // Helper: Update Word Count
+        function updateCount() {
             const text = editor.innerText.trim();
             const count = text.length === 0 ? 0 : text.split(/\s+/).length;
             countSpan.innerText = count;
+        }
+
+        // 1. Live Word Counter + AUTO SAVE
+        editor.addEventListener('input', function() {
+            updateCount();
+            // Save content to LocalStorage
+            localStorage.setItem('wb_content', editor.innerHTML);
         });
 
         // 2. Theme Switching
         function setTheme(themeName) {
             document.body.className = themeName;
-            localStorage.setItem('zw_theme', themeName);
+            localStorage.setItem('wb_theme', themeName); // Changed key to 'wb_theme'
             editor.focus();
         }
 
@@ -246,10 +253,19 @@
             setTimeout(() => { btn.innerText = originalText; }, 1500);
         }
 
-        // 4. Initialize
+        // 4. Initialize (Load Theme and Content)
         window.onload = function() {
-            const savedTheme = localStorage.getItem('zw_theme');
+            // Load Theme
+            const savedTheme = localStorage.getItem('wb_theme');
             if(savedTheme) document.body.className = savedTheme;
+
+            // Load Content
+            const savedContent = localStorage.getItem('wb_content');
+            if(savedContent) {
+                editor.innerHTML = savedContent;
+                updateCount(); // Update the counter immediately after loading
+            }
+
             editor.focus();
         }
     </script>
