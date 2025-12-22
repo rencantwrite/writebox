@@ -19,6 +19,7 @@
             --border-color: #cccccc;   
             --accent-ui: #444444;
             --caret: #000000;
+            --shadow: rgba(0, 0, 0, 0.08);
         }
 
         body.dark-mode {
@@ -28,6 +29,7 @@
             --border-color: #333333;
             --accent-ui: #888888;
             --caret: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.5);
         }
 
         body.green-mode {
@@ -37,6 +39,7 @@
             --border-color: #2c4234;
             --accent-ui: #62856e;
             --caret: #b8cfc0;
+            --shadow: rgba(0, 0, 0, 0.2);
         }
 
         body.red-mode {
@@ -46,6 +49,7 @@
             --border-color: #422c2c;
             --accent-ui: #856262;
             --caret: #cfb8b8;
+            --shadow: rgba(0, 0, 0, 0.2);
         }
 
         body.yellow-mode {
@@ -55,6 +59,7 @@
             --border-color: #d1c8b4;
             --accent-ui: #8f8576;
             --caret: #4a4238;
+            --shadow: rgba(0, 0, 0, 0.08);
         }
 
         /* --- LAYOUT --- */
@@ -72,7 +77,7 @@
             transition: background-color 0.2s ease;
         }
 
-        /* --- THE A5 PAGE --- */
+        /* --- THE PAGE --- */
         .page-container {
             width: 148mm;
             min-height: 210mm;
@@ -81,7 +86,7 @@
             padding: 20mm 15mm;
             color: var(--text-main);
             
-            /* Typography Settings */
+            /* Typography */
             font-size: 18px;           
             line-height: 1.6;          
             font-weight: 400;          
@@ -89,8 +94,9 @@
             outline: none;
             white-space: pre-wrap;
             caret-color: var(--caret);
-            transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+            transition: all 0.2s ease;
             position: relative;
+            margin-bottom: 40px; /* Space for the bottom toolbar */
         }
 
         /* Placeholder */
@@ -101,114 +107,121 @@
             pointer-events: none;
         }
 
-        /* --- UI CONTROLS (Fixed Top Right) --- */
-        .controls {
+        /* --- THE BOTTOM DOCK (Toolbar) --- */
+        .dock-container {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
+            align-items: center;
             gap: 15px;
-            z-index: 100;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 8px;
+            
             background: var(--paper-bg);
             border: 1px solid var(--border-color);
-            padding: 5px;
-            border-radius: 4px;
+            padding: 8px 20px;
+            border-radius: 1px; /* Pill shape */
+            box-shadow: 0 4px 12px var(--shadow);
+            z-index: 100;
+            transition: all 0.2s ease;
         }
 
-        button {
-            cursor: pointer;
-            border: none;
-            outline: none;
+        /* 1. Copy Button (Left) */
+        .dock-btn {
             background: transparent;
+            border: none;
             font-family: 'Roboto Serif', serif;
             font-size: 13px;
-            color: var(--accent-ui);
-            padding: 5px 10px;
-            border-radius: 2px;
-            transition: all 0.2s;
-        }
-
-        button:hover {
-            background-color: var(--app-bg);
-            color: var(--text-main);
-        }
-
-        .action-btn {
             font-weight: 600;
+            color: var(--accent-ui);
+            cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .dock-btn:hover {
+            color: var(--text-main);
+            background: var(--app-bg);
         }
 
-        /* Color Circles */
+        /* Vertical Divider */
+        .divider {
+            width: 1px;
+            height: 18px;
+            background-color: var(--border-color);
+        }
+
+        /* 2. Word Count (Center) */
+        .counter {
+            font-size: 14px;
+            color: var(--accent-ui);
+            font-variant-numeric: tabular-nums;
+            min-width: 60px;
+            text-align: center;
+            user-select: none;
+        }
+
+        /* 3. Color Dots (Right) */
+        .theme-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
         .color-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            border-radius: 10%;
             border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.2s;
             padding: 0;
         }
+        .color-dot:hover { transform: scale(1.2); }
+        
         .dot-light { background: #ffffff; }
         .dot-dark  { background: #1c1c1c; }
         .dot-sepia { background: #f7f3e8; }
         .dot-green { background: #1e2e23; }
         .dot-red   { background: #2e1e1e; }
 
-        /* --- STICKY WORD COUNTER --- */
-        .word-counter {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--paper-bg);
-            border: 1px solid var(--border-color);
-            color: var(--accent-ui);
-            padding: 6px 12px;
-            font-size: 14px;
-            border-radius: 4px;
-            font-variant-numeric: tabular-nums;
-            z-index: 100;
-        }
-
         /* Scrollbar styling */
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: var(--app-bg); }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border: 3px solid var(--app-bg); border-radius: 10px; }
 
-        /* Mobile */
+        /* Mobile Adjustments */
         @media (max-width: 600px) {
             .page-container { width: 94%; padding: 15mm 10mm; }
-            .controls { top: 10px; right: 10px; flex-direction: row; align-items: flex-start; }
-            .btn-group { flex-wrap: wrap; justify-content: flex-end; }
+            .dock-container { width: 90%; justify-content: space-between; gap: 5px; padding: 8px 15px; }
         }
     </style>
 </head>
 <body class="light-mode">
 
-    <div class="controls">
-        <div class="btn-group">
-            <button class="action-btn" onclick="copyText()" id="copyBtn">Copy All</button>
-        </div>
+    <div class="page-container" id="editor" contenteditable="true" spellcheck="false"></div>
 
-        <div class="btn-group">
+    <div class="dock-container">
+        
+        <button class="dock-btn" onclick="copyText()" id="copyBtn">Copy</button>
+
+        <div class="divider"></div>
+
+        <span class="counter"><span id="count">0</span> words</span>
+
+        <div class="divider"></div>
+
+        <div class="theme-group">
             <button class="color-dot dot-light" onclick="setTheme('light-mode')" title="Light"></button>
             <button class="color-dot dot-sepia" onclick="setTheme('yellow-mode')" title="Sepia"></button>
             <button class="color-dot dot-dark" onclick="setTheme('dark-mode')" title="Dark"></button>
             <button class="color-dot dot-green" onclick="setTheme('green-mode')" title="Green"></button>
             <button class="color-dot dot-red" onclick="setTheme('red-mode')" title="Red"></button>
         </div>
-    </div>
 
-    <div class="page-container" id="editor" contenteditable="true" spellcheck="false"></div>
-
-    <div class="word-counter">
-        <span id="count">0</span> words
     </div>
 
     <script>
@@ -225,14 +238,13 @@
         // 1. Live Word Counter + AUTO SAVE
         editor.addEventListener('input', function() {
             updateCount();
-            // Save content to LocalStorage
             localStorage.setItem('wb_content', editor.innerHTML);
         });
 
         // 2. Theme Switching
         function setTheme(themeName) {
             document.body.className = themeName;
-            localStorage.setItem('wb_theme', themeName); // Changed key to 'wb_theme'
+            localStorage.setItem('wb_theme', themeName);
             editor.focus();
         }
 
@@ -263,7 +275,7 @@
             const savedContent = localStorage.getItem('wb_content');
             if(savedContent) {
                 editor.innerHTML = savedContent;
-                updateCount(); // Update the counter immediately after loading
+                updateCount(); 
             }
 
             editor.focus();
