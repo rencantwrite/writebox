@@ -13,10 +13,10 @@
         /* --- THEME VARIABLES --- */
         :root {
             /* Light (Standard) */
-            --app-bg: #eef1f5;         
+            --app-bg: #eef1f5;          
             --paper-bg: #ffffff;
-            --text-main: #111111;      
-            --border-color: #cccccc;   
+            --text-main: #111111;       
+            --border-color: #cccccc;    
             --accent-ui: #444444;
             --caret: #000000;
             --shadow: rgba(0, 0, 0, 0.08);
@@ -67,7 +67,7 @@
 
         body {
             margin: 0;
-            padding: 50px 0 100px 0;
+            padding: 50px 0 0 0; /* Removed bottom padding here, handled in container */
             background-color: var(--app-bg);
             font-family: 'Roboto Serif', serif;
             display: flex;
@@ -75,6 +75,7 @@
             align-items: center;
             min-height: 100vh;
             transition: background-color 0.2s ease;
+            overflow-y: scroll; /* Force scrollbar preventing layout jumps */
         }
 
         /* --- THE PAGE --- */
@@ -87,16 +88,19 @@
             color: var(--text-main);
             
             /* Typography */
-            font-size: 18px;           
-            line-height: 1.6;          
-            font-weight: 400;          
+            font-size: 18px;            
+            line-height: 1.6;           
+            font-weight: 400;           
             
             outline: none;
             white-space: pre-wrap;
             caret-color: var(--caret);
             transition: all 0.2s ease;
             position: relative;
-            margin-bottom: 40px; /* Space for the bottom toolbar */
+            
+            /* KEY FIX: Massive bottom padding allows scrolling past the end */
+            padding-bottom: 80vh; 
+            margin-bottom: 0;
         }
 
         /* Placeholder */
@@ -121,7 +125,7 @@
             background: var(--paper-bg);
             border: 1px solid var(--border-color);
             padding: 8px 20px;
-            border-radius: 1px; /* Pill shape */
+            border-radius: 1px; 
             box-shadow: 0 4px 12px var(--shadow);
             z-index: 100;
             transition: all 0.2s ease;
@@ -195,7 +199,7 @@
 
         /* Mobile Adjustments */
         @media (max-width: 600px) {
-            .page-container { width: 94%; padding: 15mm 10mm; }
+            .page-container { width: 94%; padding: 15mm 10mm 70vh 10mm; } /* Large bottom padding on mobile too */
             .dock-container { width: 90%; justify-content: space-between; gap: 5px; padding: 8px 15px; }
         }
     </style>
@@ -235,10 +239,39 @@
             countSpan.innerText = count;
         }
 
-        // 1. Live Word Counter + AUTO SAVE
+        // --- NEW: TYPEWRITER SCROLLING LOGIC ---
+        function maintainCenterFocus() {
+            const selection = window.getSelection();
+            if (selection.rangeCount === 0) return;
+
+            const range = selection.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            
+            // We want the active line to stay roughly in the middle (50% of viewport)
+            // If the cursor goes below 55% of screen height, we scroll.
+            const threshold = window.innerHeight * 0.55;
+
+            if (rect.top > threshold) {
+                // Calculate how much we need to scroll down to bring the line up
+                const offset = rect.top - (window.innerHeight / 2);
+                window.scrollBy({
+                    top: offset,
+                    behavior: 'smooth' 
+                });
+            }
+        }
+
+        // 1. Live Word Counter + AUTO SAVE + Typewriter Scroll
         editor.addEventListener('input', function() {
             updateCount();
             localStorage.setItem('wb_content', editor.innerHTML);
+            maintainCenterFocus(); // Keep text centered while typing
+        });
+
+        // Also check focus on click/enter
+        editor.addEventListener('click', maintainCenterFocus);
+        editor.addEventListener('keyup', (e) => {
+            if(e.key === 'Enter') maintainCenterFocus();
         });
 
         // 2. Theme Switching
@@ -279,6 +312,9 @@
             }
 
             editor.focus();
+            
+            // Initial center check after load
+            setTimeout(maintainCenterFocus, 100);
         }
     </script>
 </body>
