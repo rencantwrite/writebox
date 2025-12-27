@@ -7,19 +7,18 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cantarell:wght@400;700&family=Comfortaa:wght@300..700&family=Crimson+Pro:wght@200..900&family=Inter:wght@100..900&family=Lato:wght@300;400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Literata:opsz,wght@7..72,200..900&family=Merriweather:wght@300;400;700;900&family=Montserrat:wght@100..900&family=Poppins:wght@100..900&family=Roboto+Serif:opsz,wght@8..144,300..600&family=Source+Sans+3:wght@200..900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- THEME VARIABLES --- */
         :root {
-            /* Light (Standard) */
-            --app-bg: #eef1f5;          
+            --app-bg: #eef1f5;           
             --paper-bg: #ffffff;
-            --text-main: #111111;       
+            --text-main: #111111;        
             --border-color: #cccccc;    
             --accent-ui: #444444;
             --caret: #000000;
             --shadow: rgba(0, 0, 0, 0.08);
+            --current-font: 'Roboto Serif', serif;
         }
 
         body.dark-mode {
@@ -62,23 +61,22 @@
             --shadow: rgba(0, 0, 0, 0.08);
         }
 
-        /* --- LAYOUT --- */
         * { box-sizing: border-box; }
 
         body {
             margin: 0;
             padding: 50px 0 0 0; 
             background-color: var(--app-bg);
-            font-family: "Source Sans 3", sans-serif;
+            font-family: var(--current-font);
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            transition: background-color 0.2s ease;
-            overflow-y: scroll; 
+            transition: background-color 0.2s ease, color 0.2s ease;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
         }
 
-        /* --- THE PAGE --- */
         .page-container {
             width: 148mm;
             min-height: 210mm;
@@ -86,23 +84,22 @@
             border: 1px solid var(--border-color); 
             padding: 20mm 15mm;
             color: var(--text-main);
-            
-            /* Typography */
             font-size: 18px;            
             line-height: 1.6;            
             font-weight: 400;            
-            
             outline: none;
             white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
             caret-color: var(--caret);
             transition: all 0.2s ease;
             position: relative;
-            
             padding-bottom: 80vh; 
             margin-bottom: 0;
+            -webkit-user-select: text;
+            user-select: text;
         }
 
-        /* Placeholder */
         .page-container:empty:before {
             content: "Start writing...";
             color: var(--accent-ui);
@@ -110,31 +107,27 @@
             pointer-events: none;
         }
 
-        /* --- THE BOTTOM DOCK (Toolbar) --- */
         .dock-container {
             position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            
             display: flex;
             align-items: center;
             gap: 15px;
-            
             background: var(--paper-bg);
             border: 1px solid var(--border-color);
             padding: 8px 20px;
-            border-radius: 1px; 
+            border-radius: 4px;
             box-shadow: 0 4px 12px var(--shadow);
             z-index: 100;
             transition: all 0.2s ease;
         }
 
-        /* Buttons */
         .dock-btn {
             background: transparent;
             border: none;
-            font-family: "Source Sans 3", sans-serif;
+            font-family: inherit;
             font-size: 13px;
             font-weight: 600;
             color: var(--accent-ui);
@@ -150,14 +143,34 @@
             background: var(--app-bg);
         }
 
-        /* Vertical Divider */
+        .dock-select {
+            background: transparent;
+            border: none;
+            color: var(--accent-ui);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            max-width: 120px;
+        }
+        .dock-select:hover {
+            color: var(--text-main);
+            background: var(--app-bg);
+        }
+        .dock-select option {
+            background: var(--paper-bg);
+            color: var(--text-main);
+        }
+
         .divider {
             width: 1px;
             height: 18px;
             background-color: var(--border-color);
         }
 
-        /* Word Count */
         .counter {
             font-size: 14px;
             color: var(--accent-ui);
@@ -167,7 +180,6 @@
             user-select: none;
         }
 
-        /* Color Dots */
         .theme-group {
             display: flex;
             gap: 8px;
@@ -177,7 +189,7 @@
         .color-dot {
             width: 14px;
             height: 14px;
-            border-radius: 10%;
+            border-radius: 50%;
             border: 1px solid var(--border-color);
             cursor: pointer;
             transition: transform 0.2s;
@@ -191,15 +203,85 @@
         .dot-green { background: #1e2e23; }
         .dot-red   { background: #2e1e1e; }
 
-        /* Scrollbar styling */
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: var(--app-bg); }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border: 3px solid var(--app-bg); border-radius: 10px; }
 
-        /* Mobile Adjustments */
-        @media (max-width: 600px) {
-            .page-container { width: 94%; padding: 15mm 10mm 70vh 10mm; } 
-            .dock-container { width: 90%; justify-content: space-between; gap: 5px; padding: 8px 15px; }
+        @media (max-width: 700px) {
+            body { padding: 20px 0 0 0; }
+            
+            .page-container { 
+                width: 94%; 
+                min-height: calc(100vh - 120px);
+                padding: 15mm 10mm 30vh 10mm;
+                font-size: 16px;
+                border: none;
+            } 
+            
+            .dock-container { 
+                width: calc(100% - 20px);
+                margin: 0 10px;
+                left: 0;
+                right: 0;
+                transform: none;
+                justify-content: space-between; 
+                gap: 8px; 
+                padding: 10px 12px; 
+                bottom: 10px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            
+            .dock-btn {
+                font-size: 12px;
+                padding: 6px 10px;
+                white-space: nowrap;
+            }
+            
+            .dock-select {
+                font-size: 12px;
+                max-width: 100px;
+            }
+            
+            .counter { 
+                font-size: 12px;
+                min-width: 50px;
+            }
+            
+            .divider { display: none; }
+            
+            .theme-group { gap: 6px; }
+            .color-dot { 
+                width: 18px; 
+                height: 18px;
+                flex-shrink: 0;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .page-container { 
+                width: 96%;
+                padding: 10mm 8mm 30vh 8mm;
+            }
+            
+            .dock-container {
+                gap: 6px;
+                padding: 8px 10px;
+            }
+            
+            .dock-btn { 
+                font-size: 11px;
+                padding: 5px 8px;
+            }
+            
+            .dock-select { max-width: 80px; }
+        }
+        
+        @media (min-width: 701px) and (max-width: 1024px) {
+            .page-container { 
+                width: 80%;
+                max-width: 180mm;
+            }
         }
     </style>
 </head>
@@ -208,137 +290,217 @@
     <div class="page-container" id="editor" contenteditable="true" spellcheck="false"></div>
 
     <div class="dock-container">
-        
-        <button class="dock-btn" onclick="downloadTxt()" id="saveBtn">Save</button>
-        
+        <button class="dock-btn" data-action="save">Save</button>
         <div class="divider"></div>
-
-        <button class="dock-btn" onclick="copyText()" id="copyBtn">Copy</button>
-
+        <button class="dock-btn" data-action="copy">Copy</button>
         <div class="divider"></div>
-
+        <select id="fontSelector" class="dock-select">
+            <option value="'Roboto Serif', serif">Roboto Serif</option>
+            <option value="'Source Sans 3', sans-serif">Source Sans 3</option>
+            <option value="'Crimson Pro', serif">Crimson Pro</option>
+            <option value="'Cantarell', sans-serif">Cantarell</option>
+            <option value="'Comfortaa', cursive">Comfortaa</option>
+            <option value="'Merriweather', serif">Merriweather</option>
+            <option value="'Poppins', sans-serif">Poppins</option>
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="'Montserrat', sans-serif">Montserrat</option>
+            <option value="'Inter', sans-serif">Inter</option>
+            <option value="'Literata', serif">Literata</option>
+            <option value="'Lato', sans-serif">Lato</option>
+            <option value="'Libre Baskerville', serif">Libre Baskerville</option>
+        </select>
+        <div class="divider"></div>
         <span class="counter"><span id="count">0</span> words</span>
-
         <div class="divider"></div>
-
         <div class="theme-group">
-            <button class="color-dot dot-light" onclick="setTheme('light-mode')" title="Light"></button>
-            <button class="color-dot dot-sepia" onclick="setTheme('yellow-mode')" title="Sepia"></button>
-            <button class="color-dot dot-dark" onclick="setTheme('dark-mode')" title="Dark"></button>
-            <button class="color-dot dot-green" onclick="setTheme('green-mode')" title="Green"></button>
-            <button class="color-dot dot-red" onclick="setTheme('red-mode')" title="Red"></button>
+            <button class="color-dot dot-light" data-theme="light-mode" title="Light"></button>
+            <button class="color-dot dot-sepia" data-theme="yellow-mode" title="Sepia"></button>
+            <button class="color-dot dot-dark" data-theme="dark-mode" title="Dark"></button>
+            <button class="color-dot dot-green" data-theme="green-mode" title="Green"></button>
+            <button class="color-dot dot-red" data-theme="red-mode" title="Red"></button>
         </div>
-
     </div>
 
     <script>
-        const editor = document.getElementById('editor');
-        const countSpan = document.getElementById('count');
+        // State management
+        const State = {
+            keys: {
+                CONTENT: 'wb_content',
+                THEME: 'wb_theme',
+                FONT: 'wb_font'
+            },
+            
+            get(key) {
+                return localStorage.getItem(key);
+            },
+            
+            set(key, value) {
+                localStorage.setItem(key, value);
+            }
+        };
 
-        // Helper: Update Word Count
-        function updateCount() {
-            const text = editor.innerText.trim();
-            const count = text.length === 0 ? 0 : text.split(/\s+/).length;
-            countSpan.innerText = count;
+        // DOM elements
+        const elements = {
+            editor: document.getElementById('editor'),
+            count: document.getElementById('count'),
+            fontSelector: document.getElementById('fontSelector'),
+            body: document.body
+        };
+
+        // Debounce helper
+        function debounce(fn, delay) {
+            let timeoutId;
+            return function(...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => fn.apply(this, args), delay);
+            };
         }
 
-        // --- TYPEWRITER SCROLLING LOGIC ---
+        // Word count
+        function updateWordCount() {
+            const text = elements.editor.innerText.trim();
+            const count = text ? text.split(/\s+/).length : 0;
+            elements.count.textContent = count;
+        }
+
+        // Typewriter scrolling (optimized for mobile)
         function maintainCenterFocus() {
             const selection = window.getSelection();
-            if (selection.rangeCount === 0) return;
+            if (!selection.rangeCount) return;
 
             const range = selection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
             
-            const threshold = window.innerHeight * 0.55;
+            // Adjust threshold for smaller screens
+            const isMobile = window.innerWidth <= 700;
+            const threshold = window.innerHeight * (isMobile ? 0.6 : 0.55);
 
             if (rect.top > threshold) {
-                const offset = rect.top - (window.innerHeight / 2);
                 window.scrollBy({
-                    top: offset,
-                    behavior: 'smooth' 
+                    top: rect.top - (window.innerHeight / 2),
+                    behavior: 'smooth'
                 });
             }
         }
 
-        // 1. Live Word Counter + AUTO SAVE + Typewriter Scroll
-        editor.addEventListener('input', function() {
-            updateCount();
-            localStorage.setItem('wb_content', editor.innerHTML);
-            maintainCenterFocus(); 
-        });
+        // Autosave (debounced)
+        const autoSave = debounce(() => {
+            State.set(State.keys.CONTENT, elements.editor.innerHTML);
+        }, 500);
 
-        editor.addEventListener('click', maintainCenterFocus);
-        editor.addEventListener('keyup', (e) => {
-            if(e.key === 'Enter') maintainCenterFocus();
-        });
-
-        // 2. Theme Switching
+        // Theme management
         function setTheme(themeName) {
-            document.body.className = themeName;
-            localStorage.setItem('wb_theme', themeName);
-            editor.focus();
+            elements.body.className = themeName;
+            State.set(State.keys.THEME, themeName);
+            elements.editor.focus();
         }
 
-        // 3. Copy Functionality
+        // Font management
+        function setFont(fontName) {
+            document.documentElement.style.setProperty('--current-font', fontName);
+            elements.fontSelector.value = fontName;
+            State.set(State.keys.FONT, fontName);
+            elements.editor.focus();
+        }
+
+        // Copy text
         function copyText() {
             const range = document.createRange();
-            range.selectNodeContents(editor);
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-            
+            range.selectNodeContents(elements.editor);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
             document.execCommand('copy');
-            sel.removeAllRanges();
-
-            const btn = document.getElementById('copyBtn');
-            const originalText = btn.innerText;
-            btn.innerText = "COPIED!";
-            setTimeout(() => { btn.innerText = originalText; }, 1500);
+            selection.removeAllRanges();
+            
+            showFeedback('copy', 'COPIED!');
         }
 
-        // 4. NEW: Download/Save Functionality
-        function downloadTxt() {
-            const text = editor.innerText;
-            if (!text) return; // Do not save if empty
+        // Download/Save
+        function downloadText() {
+            const text = elements.editor.innerText;
+            if (!text.trim()) return;
 
-            // Create a blob object representing the text
             const blob = new Blob([text], { type: 'text/plain' });
-            
-            // Create a temporary anchor element to trigger download
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = `Note-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
             
-            // Generate filename with current date: "Note-2023-10-27.txt"
-            const dateStr = new Date().toISOString().slice(0, 10);
-            a.download = `Note-${dateStr}.txt`;
-            
-            document.body.appendChild(a);
-            a.click(); // Trigger click
-            document.body.removeChild(a); // Clean up
-            URL.revokeObjectURL(a.href);
-
-            // Visual feedback on button
-            const btn = document.getElementById('saveBtn');
-            const originalText = btn.innerText;
-            btn.innerText = "SAVED!";
-            setTimeout(() => { btn.innerText = originalText; }, 1500);
+            showFeedback('save', 'SAVED!');
         }
 
-        // 5. Initialize (Load Theme and Content)
-        window.onload = function() {
-            const savedTheme = localStorage.getItem('wb_theme');
-            if(savedTheme) document.body.className = savedTheme;
+        // Button feedback
+        function showFeedback(action, message) {
+            const btn = document.querySelector(`[data-action="${action}"]`);
+            const originalText = btn.textContent;
+            btn.textContent = message;
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 1500);
+        }
 
-            const savedContent = localStorage.getItem('wb_content');
-            if(savedContent) {
-                editor.innerHTML = savedContent;
-                updateCount(); 
+        // Initialize
+        function init() {
+            // Load saved content
+            const savedContent = State.get(State.keys.CONTENT);
+            if (savedContent) {
+                elements.editor.innerHTML = savedContent;
+                updateWordCount();
             }
 
-            editor.focus();
+            // Load saved theme
+            const savedTheme = State.get(State.keys.THEME);
+            if (savedTheme) {
+                elements.body.className = savedTheme;
+            }
+
+            // Load saved font
+            const savedFont = State.get(State.keys.FONT);
+            if (savedFont) {
+                setFont(savedFont);
+            }
+
+            // Focus editor (don't auto-focus on mobile to avoid keyboard popping up)
+            const isMobile = window.innerWidth <= 700;
+            if (!isMobile) {
+                elements.editor.focus();
+            }
+            
             setTimeout(maintainCenterFocus, 100);
         }
+
+        // Event listeners
+        elements.editor.addEventListener('input', () => {
+            updateWordCount();
+            autoSave();
+            maintainCenterFocus();
+        });
+
+        elements.editor.addEventListener('click', maintainCenterFocus);
+        
+        elements.editor.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') maintainCenterFocus();
+        });
+
+        elements.fontSelector.addEventListener('change', (e) => {
+            setFont(e.target.value);
+        });
+
+        // Event delegation for dock buttons
+        document.querySelector('.dock-container').addEventListener('click', (e) => {
+            const action = e.target.dataset.action;
+            const theme = e.target.dataset.theme;
+            
+            if (action === 'save') downloadText();
+            if (action === 'copy') copyText();
+            if (theme) setTheme(theme);
+        });
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
